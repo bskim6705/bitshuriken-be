@@ -17,11 +17,13 @@ import { WalletModule } from './spot/wallet/wallet.module';
 import { FeeModule } from './spot/fee/fee.module';
 import { KlineModule } from './spot/kline/kline.module';
 import { PrecisionService } from './spot/precision/precision.service';
+import { FuturesUserModule } from './futures/user/futures-user.module';
 
 @Global()
 @Module({
   providers: [PrecisionService],
   exports: [PrecisionService],
+  imports: [FuturesUserModule],
 })
 export class CommonModule {}
 
@@ -40,6 +42,7 @@ export class CommonModule {}
     UserModule,
     KlineModule,
     FeeModule,
+    FuturesUserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,0 +1,275 @@
+// datasource for MySQL
+ datasource db {
+   provider = "mysql"
+   url      = env("FUTURES_DATABASE_URL")
+ }
+
+// Prisma Client generator
+ generator client {
+   provider = "prisma-client-js"
+   output   = "../../node_modules/@prisma/client-futures"
+ }
+
+enum AssetMode {
+  SINGLE_ASSET
+  MULTI_ASSET
+}
+
+model User {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique
+  assetMode     AssetMode    @default(SINGLE_ASSET)
+  positionMode  PositionMode @default(ONE_WAY)
+  createdAt     DateTime     @default(now())
+
+  // Relations
+  balances Balance[]
+  positions Position[]
+  positionSettings PositionSetting[]
+}
+
+model Pair {
+  id        Int     @id @default(autoincrement())
+  symbol    String  @unique
+  baseAsset String
+  quoteAsset String
+  createdAt DateTime @default(now())
+
+  // Relations
+  positions Position[]
+  positionSettings PositionSetting[]
+}
+
+model Currency {
+  code String @id                // e.g. "BTC", "USDT"
+  name String?
+  symbol String?                 // optional display symbol
+  createdAt DateTime @default(now())
+
+  // Relations
+  balances Balance[]
+}
+
+model Balance {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  currencyCode String
+  margin       Decimal  @db.Decimal(40, 18)          // margin balance
+  available    Decimal  @db.Decimal(40, 18)          // free balance
+  locked       Decimal  @db.Decimal(40, 18)          // reserved for open orders
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id])
+  currency Currency @relation(fields: [currencyCode], references: [code])
+
+  @@unique([userId, currencyCode])
+}
+
+enum PositionSide {
+  LONG
+  SHORT
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
+}
+
+enum PositionMode {
+  ONE_WAY
+  HEDGE
+}
+
+enum MarginMode {
+  ISOLATED
+  CROSS
+}
+
+model Position {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  pairId    Int
+  positionSide PositionSide
+  positionStatus PositionStatus
+  qty Decimal  @db.Decimal(40, 18)
+  entryPrice Decimal  @db.Decimal(40, 18)
+  // unrealizedPnl Decimal  @db.Decimal(40, 18)
+  isolatedMargin Decimal  @db.Decimal(40, 18)
+  leverage Decimal  @db.Decimal(40, 18)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  pair Pair @relation(fields: [pairId], references: [id])
+}
+
+model PositionSetting {
+  id         Int        @id @default(autoincrement())
+  userId     Int
+  pairId     Int
+  marginMode MarginMode @default(CROSS)
+  leverage   Decimal    @db.Decimal(10, 2) @default(1.00)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  pair Pair @relation(fields: [pairId], references: [id])
+
+  @@unique([userId, pairId])
+}
+
+
+/* below is spot schema */
+
+// // datasource for MySQL
+//  datasource db {
+//    provider = "mysql"
+//    url      = env("SPOT_DATABASE_URL")
+//  }
+
+// // Prisma Client generator
+//  generator client {
+//    provider = "prisma-client-js"
+//    output   = "../../node_modules/@prisma/client-spot"
+//  }
+
+//  model User {
+//    id        Int     @id @default(autoincrement())
+//    email     String  @unique
+//    password  String
+//    createdAt DateTime @default(now())
+
+//    // Relations
+//    balances Balance[]
+//    tradeFees      TradeFee[]
+//    wallets  Wallet[]
+//    openOrders OpenOrder[]
+//  }
+
+// // Currency supported by the exchange
+// model Currency {
+//   code String @id                // e.g. "BTC", "USDT"
+//   name String?
+//   symbol String?                 // optional display symbol
+//   createdAt DateTime @default(now())
+
+//   // Relations
+//   balances Balance[]
+//   basePairs      Pair[] @relation("BaseCurrency")
+//   quotePairs     Pair[] @relation("QuoteCurrency")
+//   wallets  Wallet[]
+// }
+
+// // Trading pair (market)
+// model Pair {
+//   id                Int      @id @default(autoincrement())
+//   symbol            String   @unique                 // e.g. "BTCUSDT"
+//   baseCurrencyCode  String
+//   quoteCurrencyCode String
+//   pricePrecision    Int      // number of decimal places for price
+//   amountPrecision   Int      // number of decimal places for amount/quantity
+//   createdAt         DateTime @default(now())
+
+//   // Relations
+//   baseCurrency  Currency @relation("BaseCurrency", fields: [baseCurrencyCode], references: [code])
+//   quoteCurrency Currency @relation("QuoteCurrency", fields: [quoteCurrencyCode], references: [code])
+//   tradeFees     TradeFee[]
+//   defaultFee    TradeFeeDefault?
+//   openOrders    OpenOrder[]
+// }
+
+// // Wallet balance per user & currency (virtual ledger)
+// model Balance {
+//   id           Int      @id @default(autoincrement())
+//   userId       Int
+//   currencyCode String
+//   available    Decimal  @db.Decimal(40, 18)          // free balance
+//   locked       Decimal  @db.Decimal(40, 18)          // reserved for open orders
+//   updatedAt    DateTime @updatedAt
+
+//   // Relations
+//   user     User     @relation(fields: [userId], references: [id])
+//   currency Currency @relation(fields: [currencyCode], references: [code])
+
+//   @@unique([userId, currencyCode])
+// }
+
+// // Trading fee defaults per pair
+// model TradeFeeDefault {
+//   id        Int      @id @default(autoincrement())
+//   pairId    Int
+//   makerRate Decimal  @db.Decimal(10, 5) // 0.05% -> 0.00050
+//   takerRate Decimal  @db.Decimal(10, 5) // 0.10% -> 0.00100
+
+//   // Relations
+//   pair Pair @relation(fields: [pairId], references: [id])
+
+//   @@unique([pairId])
+// }
+
+// // Override fee per user + pair
+// model TradeFee {
+//   id        Int      @id @default(autoincrement())
+//   userId    Int
+//   pairId    Int
+//   makerRate Decimal  @db.Decimal(10, 5)
+//   takerRate Decimal  @db.Decimal(10, 5)
+
+//   // Relations
+//   user User @relation(fields: [userId], references: [id])
+//   pair Pair @relation(fields: [pairId], references: [id])
+
+//   @@unique([userId, pairId])
+// }
+
+// // On-chain / virtual wallet address per user & currency
+// model Wallet {
+//   id           Int      @id @default(autoincrement())
+//   userId       Int
+//   currencyCode String
+//   address      String   // placeholder for future real address
+//   createdAt    DateTime @default(now())
+
+//   user     User     @relation(fields: [userId], references: [id])
+//   currency Currency @relation(fields: [currencyCode], references: [code])
+
+//   @@unique([currencyCode, address])
+// }
+
+// enum OrderSide {
+//   BUY
+//   SELL
+// }
+
+// enum OrderType {
+//   LIMIT
+//   MARKET
+// }
+
+// enum OrderStatus {
+//   OPEN
+//   PARTIAL
+//   FILLED
+//   CANCELED
+// }
+
+// model OpenOrder {
+//   orderId   String      @id                       // UUID from order-service
+//   userId    Int
+//   pairId    Int
+//   side      OrderSide
+//   type      OrderType
+//   price     Decimal?    @db.Decimal(40, 18)       // null for MARKET
+//   qty       Decimal     @db.Decimal(40, 18)       // original quantity
+//   remaining Decimal     @db.Decimal(40, 18)       // unfilled quantity
+//   status    OrderStatus
+//   createdAt DateTime    @default(now())
+//   updatedAt DateTime    @updatedAt
+
+//   // Relations
+//   pair Pair @relation(fields: [pairId], references: [id])
+//   user User @relation(fields: [userId], references: [id])
+
+//   @@index([userId, pairId, status])
+// }
