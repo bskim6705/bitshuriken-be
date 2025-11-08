@@ -9,7 +9,7 @@ import {
 
 import { Type } from 'class-transformer';
 
-import { OrderSide, OrderType } from '../../types';
+import { OrderSide, PositionSide, OrderType } from '../../types';
 export { OrderSide, OrderType };
 
 export class CreateOrderDto {
@@ -18,6 +18,9 @@ export class CreateOrderDto {
 
   @IsEnum(OrderSide)
   side!: OrderSide;
+
+  @IsEnum(PositionSide)
+  positionSide!: PositionSide;
 
   @IsEnum(OrderType)
   type!: OrderType;

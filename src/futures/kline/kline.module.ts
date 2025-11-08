@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { KlineService } from './kline.service';
-import { KafkaModule } from '../kafka/kafka.module';
+import { FuturesKlineService } from './kline.service';
+import { FuturesKafkaModule } from '../kafka/kafka.module';
 import { Candle, CandleSchema } from '../../../mongoose/schema/candles';
 import { CandleRepository } from '../repository/candle.repository';
 import { PrecisionService } from '../../precision/precision.service';
-import { KlineController } from './kline.controller';
+import { FuturesKlineController } from './kline.controller';
 
 @Module({
   imports: [
-    KafkaModule,
+    FuturesKafkaModule,
     MongooseModule.forFeature([{ name: Candle.name, schema: CandleSchema }]),
   ],
-  controllers: [KlineController],
-  providers: [KlineService, CandleRepository, PrecisionService],
+  controllers: [FuturesKlineController],
+  providers: [FuturesKlineService, CandleRepository, PrecisionService],
 })
-export class KlineModule {}
+export class FuturesKlineModule {}

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Pair } from '@prisma/client-futures';
 
-import { PrismaService } from '../prisma/prisma.service';
+import { FuturesPrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class PairRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: FuturesPrismaService) {}
 
   findBySymbol(symbol: string): Promise<Pair | null> {
     return this.prisma.pair.findUnique({

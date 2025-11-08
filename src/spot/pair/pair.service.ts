@@ -52,6 +52,7 @@ export class PairService implements OnModuleInit, OnModuleDestroy {
       return pair;
     }
 
+    console.log(symbol);
     // Fallback to DB if not present in Redis, then backfill cache
     const fromDb = await this.pairRepo.findBySymbol(symbol);
     if (fromDb) {

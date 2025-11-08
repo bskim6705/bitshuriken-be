@@ -26,44 +26,61 @@ model User {
   balances Balance[]
   positions Position[]
   positionSettings PositionSetting[]
+  openOrders OpenOrder[]
+  
 }
 
 model Pair {
   id        Int     @id @default(autoincrement())
   symbol    String  @unique
-  baseAsset String
-  quoteAsset String
+  baseCurrencyCode  String
+  quoteCurrencyCode String
+  pricePrecision    Int      // number of decimal places for price
+  amountPrecision   Int      // number of decimal places for amount/quantity
   createdAt DateTime @default(now())
 
   // Relations
+  baseCurrency  Currency @relation("BaseCurrency", fields: [baseCurrencyCode], references: [code])
+  quoteCurrency MarginCurrency @relation("QuoteCurrency", fields: [quoteCurrencyCode], references: [code])
   positions Position[]
   positionSettings PositionSetting[]
+  openOrders OpenOrder[]
 }
 
 model Currency {
-  code String @id                // e.g. "BTC", "USDT"
+  code String @id                // e.g. "BTC", "ETH"
+  name String?
+  symbol String?                 // optional display symbol
+  createdAt DateTime @default(now())
+
+  basePairs      Pair[] @relation("BaseCurrency")
+}
+
+model MarginCurrency {
+  code String @id                // e.g. "USDT", "USDC"
   name String?
   symbol String?                 // optional display symbol
   createdAt DateTime @default(now())
 
   // Relations
   balances Balance[]
+  quotePairs     Pair[] @relation("QuoteCurrency")
 }
+
 
 model Balance {
   id        Int     @id @default(autoincrement())
   userId    Int
-  currencyCode String
-  margin       Decimal  @db.Decimal(40, 18)          // margin balance
+  marginCurrencyCode String
   available    Decimal  @db.Decimal(40, 18)          // free balance
   locked       Decimal  @db.Decimal(40, 18)          // reserved for open orders
   updatedAt    DateTime @updatedAt
 
   // Relations
   user     User     @relation(fields: [userId], references: [id])
-  currency Currency @relation(fields: [currencyCode], references: [code])
+  marginCurrency MarginCurrency @relation(fields: [marginCurrencyCode], references: [code])
 
-  @@unique([userId, currencyCode])
+  @@unique([userId, marginCurrencyCode])
 }
 
 enum PositionSide {
@@ -94,8 +111,8 @@ model Position {
   positionStatus PositionStatus
   qty Decimal  @db.Decimal(40, 18)
   entryPrice Decimal  @db.Decimal(40, 18)
-  // unrealizedPnl Decimal  @db.Decimal(40, 18)
-  isolatedMargin Decimal  @db.Decimal(40, 18)
+  unrealizedPnl Decimal  @db.Decimal(40, 18)
+  isolatedMargin Decimal?  @db.Decimal(40, 18)
   leverage Decimal  @db.Decimal(40, 18)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -103,6 +120,9 @@ model Position {
   // Relations
   user User @relation(fields: [userId], references: [id])
   pair Pair @relation(fields: [pairId], references: [id])
+
+  @@unique([userId, pairId, positionSide])
+
 }
 
 model PositionSetting {
@@ -116,9 +136,46 @@ model PositionSetting {
   user User @relation(fields: [userId], references: [id])
   pair Pair @relation(fields: [pairId], references: [id])
 
+
   @@unique([userId, pairId])
 }
 
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderType {
+  LIMIT
+  MARKET
+}
+
+enum OrderStatus {
+  OPEN
+  PARTIAL
+  FILLED
+  CANCELED
+}
+
+model OpenOrder {
+  orderId   String      @id                       // UUID from order-service
+  userId    Int
+  pairId    Int
+  side      OrderSide
+  type      OrderType
+  price     Decimal?    @db.Decimal(40, 18)       // null for MARKET
+  qty       Decimal     @db.Decimal(40, 18)       // original quantity
+  remaining Decimal     @db.Decimal(40, 18)       // unfilled quantity
+  status    OrderStatus
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  pair Pair @relation(fields: [pairId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, pairId, status])
+}
 
 /* below is spot schema */
 
@@ -237,39 +294,4 @@ model PositionSetting {
 //   @@unique([currencyCode, address])
 // }
 
-// enum OrderSide {
-//   BUY
-//   SELL
-// }
 
-// enum OrderType {
-//   LIMIT
-//   MARKET
-// }
-
-// enum OrderStatus {
-//   OPEN
-//   PARTIAL
-//   FILLED
-//   CANCELED
-// }
-
-// model OpenOrder {
-//   orderId   String      @id                       // UUID from order-service
-//   userId    Int
-//   pairId    Int
-//   side      OrderSide
-//   type      OrderType
-//   price     Decimal?    @db.Decimal(40, 18)       // null for MARKET
-//   qty       Decimal     @db.Decimal(40, 18)       // original quantity
-//   remaining Decimal     @db.Decimal(40, 18)       // unfilled quantity
-//   status    OrderStatus
-//   createdAt DateTime    @default(now())
-//   updatedAt DateTime    @updatedAt
-
-//   // Relations
-//   pair Pair @relation(fields: [pairId], references: [id])
-//   user User @relation(fields: [userId], references: [id])
-
-//   @@index([userId, pairId, status])
-// }

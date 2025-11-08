@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrecisionService } from '../../precision/precision.service';
 
-import { PrismaService } from '../prisma/prisma.service';
-import { Balance, Prisma } from '@prisma/client-spot';
+import { FuturesPrismaService } from '../prisma/prisma.service';
+import { Balance, Prisma } from '@prisma/client-futures';
 import Decimal from 'decimal.js';
 
 @Injectable()
-export class BalanceRepository {
+export class FuturesBalanceRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prisma: FuturesPrismaService,
     private readonly precisionService: PrecisionService,
   ) {}
 
@@ -22,9 +22,12 @@ export class BalanceRepository {
   /* ------------------------------------------------------------------ */
   /* Read helpers                                                       */
   /* ------------------------------------------------------------------ */
-  findBalance(userId: number, currencyCode: string): Promise<Balance | null> {
+  findBalance(
+    userId: number,
+    marginCurrencyCode: string,
+  ): Promise<Balance | null> {
     return this.prisma.balance.findUnique({
-      where: { userId_currencyCode: { userId, currencyCode } },
+      where: { userId_marginCurrencyCode: { userId, marginCurrencyCode } },
     });
   }
 
@@ -33,15 +36,15 @@ export class BalanceRepository {
   /* ------------------------------------------------------------------ */
   upsertBalance(
     userId: number,
-    currencyCode: string,
+    marginCurrencyCode: string,
     availableDelta: Decimal,
     lockedDelta: Decimal,
   ): Promise<Balance> {
     return this.prisma.balance.upsert({
-      where: { userId_currencyCode: { userId, currencyCode } },
+      where: { userId_marginCurrencyCode: { userId, marginCurrencyCode } },
       create: {
         userId,
-        currencyCode,
+        marginCurrencyCode,
         available: this.D(availableDelta),
         locked: this.D(lockedDelta),
       },
@@ -58,15 +61,15 @@ export class BalanceRepository {
   upsertBalanceTx(
     tx: Prisma.TransactionClient,
     userId: number,
-    currencyCode: string,
+    marginCurrencyCode: string,
     availableDelta: Decimal,
     lockedDelta: Decimal,
   ): Promise<Balance> {
     return tx.balance.upsert({
-      where: { userId_currencyCode: { userId, currencyCode } },
+      where: { userId_marginCurrencyCode: { userId, marginCurrencyCode } },
       create: {
         userId,
-        currencyCode,
+        marginCurrencyCode,
         available: this.D(availableDelta),
         locked: this.D(lockedDelta),
       },

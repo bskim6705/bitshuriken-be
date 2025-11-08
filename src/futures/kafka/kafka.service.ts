@@ -4,7 +4,7 @@ import { OrderPayload } from '../order/order.service.js';
 import { CancelPayload } from '../order/order.service.js';
 
 @Injectable()
-export class KafkaService implements OnModuleInit, OnModuleDestroy {
+export class FuturesKafkaService implements OnModuleInit, OnModuleDestroy {
   private kafka!: Kafka;
   private producer!: Producer;
   private readonly consumers: Consumer[] = [];

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../precision/precision.service';
+import { PrecisionService } from '../../precision/precision.service';
 
 import { BalanceService } from '../balance/balance.service';
 import { PairService } from '../pair/pair.service';

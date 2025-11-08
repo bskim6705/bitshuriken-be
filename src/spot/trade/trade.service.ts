@@ -4,7 +4,7 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { PrecisionService } from '../precision/precision.service';
+import { PrecisionService } from '../../precision/precision.service';
 import { Trade } from '../types';
 
 import { OrderStatus } from '@prisma/client-spot';

@@ -4,7 +4,7 @@ import {
   OnModuleInit,
   OnModuleDestroy,
 } from '@nestjs/common';
-import { PrecisionService } from '../precision/precision.service';
+import { PrecisionService } from '../../precision/precision.service';
 
 import { KafkaService } from '../kafka/kafka.service';
 import { Consumer, EachMessagePayload } from 'kafkajs';

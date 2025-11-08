@@ -16,7 +16,7 @@ import { UserModule } from './spot/user/user.module';
 import { WalletModule } from './spot/wallet/wallet.module';
 import { FeeModule } from './spot/fee/fee.module';
 import { KlineModule } from './spot/kline/kline.module';
-import { PrecisionService } from './spot/precision/precision.service';
+import { PrecisionService } from './precision/precision.service';
 import { FuturesUserModule } from './futures/user/futures-user.module';
 
 @Global()

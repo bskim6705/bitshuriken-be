@@ -3,12 +3,12 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { FuturesPrismaService } from '../prisma/prisma.service';
 import { CreateFuturesUserDto } from './dto/create-futures-user.dto';
 
 @Injectable()
 export class FuturesUserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: FuturesPrismaService) {}
 
   async registerFuturesUser(dto: CreateFuturesUserDto) {
     // 1. Check if user already exists in futures

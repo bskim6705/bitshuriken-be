@@ -4,7 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Trade } from '../types';
 
 import { EachBatchPayload } from 'kafkajs';
-import { KafkaService } from '../kafka/kafka.service';
+import { FuturesKafkaService } from '../kafka/kafka.service';
 import { CandleRepository } from '../repository/candle.repository';
 import { PrecisionService } from '../../precision/precision.service';
 
@@ -14,15 +14,15 @@ import { PrecisionService } from '../../precision/precision.service';
  * second.
  */
 @Injectable()
-export class KlineService implements OnModuleInit {
-  private readonly logger = new Logger(KlineService.name);
+export class FuturesKlineService implements OnModuleInit {
+  private readonly logger = new Logger(FuturesKlineService.name);
   /**
    * Buffer structure: { "SYMBOL|epochSecond" -> Trade[] }
    */
   private readonly tradeBuffer = new Map<string, Trade[]>();
 
   constructor(
-    private readonly kafkaService: KafkaService,
+    private readonly kafkaService: FuturesKafkaService,
     private readonly candleRepository: CandleRepository,
     private readonly precisionService: PrecisionService,
   ) {}

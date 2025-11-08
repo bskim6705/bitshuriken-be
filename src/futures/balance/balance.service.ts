@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client-spot';
-import { BalanceRepository } from '../repository/balance.repository';
+import { Prisma } from '@prisma/client-futures';
+import { FuturesBalanceRepository } from '../repository/balance.repository';
 import { PrecisionService } from '../../precision/precision.service';
 import Decimal from 'decimal.js';
 
@@ -10,13 +10,13 @@ import Decimal from 'decimal.js';
 @Injectable()
 export class BalanceService {
   constructor(
-    private readonly balanceRepo: BalanceRepository,
+    private readonly balanceRepo: FuturesBalanceRepository,
     private readonly precisionService: PrecisionService,
   ) {}
 
   /* --------------------------- Query helpers ------------------------ */
-  getBalance(userId: number, currencyCode: string) {
-    return this.balanceRepo.findBalance(userId, currencyCode);
+  getBalance(userId: number, marginCurrencyCode: string) {
+    return this.balanceRepo.findBalance(userId, marginCurrencyCode);
   }
 
   /* --------------------------- Standalone ops ----------------------- */

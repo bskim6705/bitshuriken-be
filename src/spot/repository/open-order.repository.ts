@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../precision/precision.service';
+import { PrecisionService } from '../../precision/precision.service';
 
 import { PrismaService } from '../prisma/prisma.service';
 import {

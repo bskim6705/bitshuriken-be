@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../precision/precision.service';
+import { PrecisionService } from '../../precision/precision.service';
 
 import { BalanceRepository } from '../repository/balance.repository';
 @Injectable()

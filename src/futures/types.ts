@@ -19,3 +19,27 @@ export type Order = {
   price?: number;
   qty: number;
 };
+
+export type Trade = {
+  symbol: string;
+  price: string;
+  qty: string;
+  maker: {
+    orderId: string;
+    side: 'SELL' | 'BUY';
+    userId: number;
+    remainingQty: string;
+  };
+  taker: {
+    orderId: string;
+    side: 'SELL' | 'BUY';
+    userId: number;
+    remainingQty: string;
+  };
+  timestamp: number;
+};
+
+export enum PositionSide {
+  LONG = 'LONG',
+  SHORT = 'SHORT',
+}

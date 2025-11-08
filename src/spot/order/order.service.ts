@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import Decimal from 'decimal.js';
 
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../precision/precision.service';
+import { PrecisionService } from '../../precision/precision.service';
 import { Order } from '../types';
 
 import { CreateOrderDto, OrderSide, OrderType } from './dto/create-order.dto';
