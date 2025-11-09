@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Pair } from '@prisma/client-futures';
-import { PairRepository } from '../repository/pair.repository';
+import { PairRepository } from './pair.repository';
 import Redis from 'ioredis';
 
 @Injectable()

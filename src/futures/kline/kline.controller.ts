@@ -1,5 +1,5 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
-import { CandleRepository } from '../repository/candle.repository';
+import { CandleRepository } from './kline.repository';
 
 /**
  * Kline DTO returned to the frontend.

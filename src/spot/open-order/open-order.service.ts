@@ -4,7 +4,7 @@ import { Prisma, OpenOrder, OrderStatus } from '@prisma/client-spot';
 import {
   OpenOrderRepository,
   CreateOpenOrderParams,
-} from '../repository/open-order.repository';
+} from './open-order.repository';
 
 @Injectable()
 export class OpenOrderService {

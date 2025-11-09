@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FuturesKlineService } from './kline.service';
 import { FuturesKafkaModule } from '../kafka/kafka.module';
 import { Candle, CandleSchema } from '../../../mongoose/schema/candles';
-import { CandleRepository } from '../repository/candle.repository';
+import { CandleRepository } from './kline.repository';
 import { FuturesKlineController } from './kline.controller';
 
 @Module({

@@ -3,7 +3,7 @@ import { Precision } from '@libs/utils/precision';
 
 import { BalanceService } from '../balance/balance.service';
 import { PairService } from '../pair/pair.service';
-import { FeeRepository } from '../repository/fee.repository';
+import { FeeRepository } from './fee.repository';
 
 export interface ApplyFeeDto {
   userId: number;

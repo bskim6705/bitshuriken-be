@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client-futures';
-import { FuturesBalanceRepository } from '../repository/balance.repository';
+import { FuturesBalanceRepository } from './balance.repository';
 import { Precision } from '@libs/utils/precision';
 import Decimal from 'decimal.js';
 

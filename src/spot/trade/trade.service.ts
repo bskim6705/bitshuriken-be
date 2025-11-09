@@ -13,7 +13,7 @@ import { KafkaService } from '../kafka/kafka.service';
 import { PairService } from '../pair/pair.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { OpenOrderService } from '../open-order/open-order.service';
-import { TradeLogRepository } from '../repository/trade-log.repository';
+import { TradeLogRepository } from './trade-log.repository';
 
 @Injectable()
 export class TradeService implements OnModuleInit, OnModuleDestroy {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client-spot';
-import { BalanceRepository } from '../repository/balance.repository';
+import { BalanceRepository } from './balance.repository';
 import { Precision } from '@libs/utils/precision';
 import Decimal from 'decimal.js';
 

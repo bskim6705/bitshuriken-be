@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Precision } from '@libs/utils/precision';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { BalanceRepository } from '../repository/balance.repository';
+import { BalanceRepository } from '../balance/balance.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()

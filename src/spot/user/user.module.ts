@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
-import { BalanceRepository } from '../repository/balance.repository';
+import { BalanceRepository } from '../balance/balance.repository';
 import { BalanceModule } from '../balance/balance.module';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';

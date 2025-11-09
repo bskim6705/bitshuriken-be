@@ -5,7 +5,7 @@ import { Trade } from '../types';
 
 import { EachBatchPayload } from 'kafkajs';
 import { KafkaService } from '../kafka/kafka.service';
-import { CandleRepository } from '../repository/candle.repository';
+import { CandleRepository } from './kline.repository';
 import { Precision } from '@libs/utils/precision';
 
 /**

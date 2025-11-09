@@ -5,7 +5,7 @@ import { BalanceModule } from '../balance/balance.module';
 import { PairModule } from '../pair/pair.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { MongoModule } from '../mongo/mongo.module';
-import { TradeLogRepository } from '../repository/trade-log.repository';
+import { TradeLogRepository } from './trade-log.repository';
 import { OpenOrderModule } from '../open-order/open-order.module';
 import { TradeWsGateway } from './trade.ws.gateway';
 

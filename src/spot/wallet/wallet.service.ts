@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Precision } from '@libs/utils/precision';
 
-import { BalanceRepository } from '../repository/balance.repository';
+import { BalanceRepository } from '../balance/balance.repository';
 @Injectable()
 export class WalletService {
   constructor(
