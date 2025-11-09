@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { BalanceRepository } from '../repository/balance.repository';
@@ -10,8 +10,7 @@ export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly balanceRepo: BalanceRepository,
-    private readonly precisionService: PrecisionService,
-  ) {}
+  ) { }
 
   async register(dto: CreateUserDto) {
     // TODO: hash password before saving
@@ -26,8 +25,8 @@ export class UserService {
     await this.balanceRepo.upsertBalance(
       user.id,
       'USDT',
-      this.precisionService.decimal(0),
-      this.precisionService.decimal(0),
+      Precision.decimal(0),
+      Precision.decimal(0),
     );
 
     return { id: user.id, email: user.email };

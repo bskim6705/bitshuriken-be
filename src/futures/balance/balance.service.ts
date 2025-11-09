@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client-futures';
 import { FuturesBalanceRepository } from '../repository/balance.repository';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 import Decimal from 'decimal.js';
 
 /**
@@ -11,7 +11,6 @@ import Decimal from 'decimal.js';
 export class BalanceService {
   constructor(
     private readonly balanceRepo: FuturesBalanceRepository,
-    private readonly precisionService: PrecisionService,
   ) {}
 
   /* --------------------------- Query helpers ------------------------ */
@@ -26,7 +25,7 @@ export class BalanceService {
       userId,
       currencyCode,
       amount,
-      this.precisionService.decimal(0),
+      Precision.decimal(0),
     );
   }
 
@@ -36,7 +35,7 @@ export class BalanceService {
       userId,
       currencyCode,
       amount.negated(),
-      this.precisionService.decimal(0),
+      Precision.decimal(0),
     );
   }
 
@@ -65,7 +64,7 @@ export class BalanceService {
     return this.balanceRepo.upsertBalance(
       userId,
       currencyCode,
-      this.precisionService.decimal(0),
+      Precision.decimal(0),
       lockedDelta,
     );
   }
@@ -83,7 +82,7 @@ export class BalanceService {
       userId,
       currencyCode,
       amount,
-      this.precisionService.decimal(0),
+      Precision.decimal(0),
     );
   }
 
@@ -98,7 +97,7 @@ export class BalanceService {
       tx,
       userId,
       currencyCode,
-      this.precisionService.decimal(0),
+      Precision.decimal(0),
       lockedDelta,
     );
   }
@@ -141,23 +140,23 @@ export class BalanceService {
         entry = {
           userId: msg.userId,
           currencyCode: msg.currencyCode,
-          availableDelta: this.precisionService.decimal(0),
-          lockedDelta: this.precisionService.decimal(0),
+          availableDelta: Precision.decimal(0),
+          lockedDelta: Precision.decimal(0),
         };
         aggregate.set(key, entry);
       }
 
       if (msg.unlockBalance) {
-        const v = this.precisionService.decimal(msg.unlockBalance);
+        const v = Precision.decimal(msg.unlockBalance);
         entry.availableDelta = entry.availableDelta.add(v);
         entry.lockedDelta = entry.lockedDelta.sub(v);
       }
       if (msg.creditBalance) {
-        const v = this.precisionService.decimal(msg.creditBalance);
+        const v = Precision.decimal(msg.creditBalance);
         entry.availableDelta = entry.availableDelta.add(v);
       }
       if (msg.debitBalance) {
-        const v = this.precisionService.decimal(msg.debitBalance);
+        const v = Precision.decimal(msg.debitBalance);
         entry.availableDelta = entry.availableDelta.sub(v);
       }
     }

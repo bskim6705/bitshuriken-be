@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 
 import { BalanceService } from '../balance/balance.service';
 import { PairService } from '../pair/pair.service';
@@ -19,7 +19,6 @@ export class FeeService {
     private readonly balanceService: BalanceService,
     private readonly pairService: PairService,
     private readonly feeRepo: FeeRepository,
-    private readonly precisionService: PrecisionService,
   ) {}
 
   async applyFee(dto: ApplyFeeDto) {
@@ -40,7 +39,7 @@ export class FeeService {
     await this.balanceService.debit(
       dto.userId,
       feeCurrency,
-      this.precisionService.decimal(feeAmount),
+      Precision.decimal(feeAmount),
     );
     // TODO: credit exchange revenue account later
     return { feeAmount, feeCurrency, rate };

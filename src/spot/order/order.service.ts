@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import Decimal from 'decimal.js';
 
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 import { Order } from '../types';
 
 import { CreateOrderDto, OrderSide, OrderType } from './dto/create-order.dto';
@@ -36,9 +36,8 @@ export class OrderService {
     private readonly kafkaService: KafkaService,
     private readonly balanceService: BalanceService,
     private readonly pairService: PairService,
-    private readonly precisionService: PrecisionService,
     private readonly openOrderService: OpenOrderService,
-  ) {}
+  ) { }
 
   async placeOrder(
     dto: CreateOrderDto,
@@ -55,10 +54,10 @@ export class OrderService {
     if (dto.side === OrderSide.BUY) {
       if (!dto.price) throw new Error('Price required for BUY lock');
       lockCurrency = pair.quoteCurrencyCode;
-      lockAmount = this.precisionService.multiply(dto.price, dto.qty);
+      lockAmount = Precision.multiply(dto.price, dto.qty);
     } else {
       lockCurrency = pair.baseCurrencyCode;
-      lockAmount = this.precisionService.decimal(dto.qty);
+      lockAmount = Precision.decimal(dto.qty);
     }
 
     // 3. Lock funds
@@ -83,9 +82,9 @@ export class OrderService {
       dto.type !== OrderType.MARKET &&
       dto.price
     ) {
-      r = this.precisionService.multiply(dto.price, dto.qty);
+      r = Precision.multiply(dto.price, dto.qty);
     } else {
-      r = this.precisionService.decimal(dto.qty);
+      r = Precision.decimal(dto.qty);
     }
 
     // 4. Persist open order record

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 
 import { FuturesPrismaService } from '../prisma/prisma.service';
 import { Balance, Prisma } from '@prisma/client-futures';
@@ -9,14 +9,13 @@ import Decimal from 'decimal.js';
 export class FuturesBalanceRepository {
   constructor(
     private readonly prisma: FuturesPrismaService,
-    private readonly precisionService: PrecisionService,
-  ) {}
+  ) { }
 
   /* ------------------------------------------------------------------ */
   /* Helper methods                                                    */
   /* ------------------------------------------------------------------ */
   private D(d: Decimal.Value): Decimal {
-    return this.precisionService.decimal(d);
+    return Precision.decimal(d);
   }
 
   /* ------------------------------------------------------------------ */

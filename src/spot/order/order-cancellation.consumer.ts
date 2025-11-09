@@ -4,7 +4,6 @@ import {
   OnModuleInit,
   OnModuleDestroy,
 } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
 
 import { KafkaService } from '../kafka/kafka.service';
 import { Consumer, EachMessagePayload } from 'kafkajs';
@@ -28,8 +27,7 @@ interface CancelResultMessage {
 
 @Injectable()
 export class OrderCancellationConsumer
-  implements OnModuleInit, OnModuleDestroy
-{
+  implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(OrderCancellationConsumer.name);
   private consumer!: Consumer;
 
@@ -37,9 +35,8 @@ export class OrderCancellationConsumer
     private readonly kafkaService: KafkaService,
     private readonly balanceService: BalanceService,
     private readonly pairService: PairService,
-    private readonly precisionService: PrecisionService,
     private readonly openOrderService: OpenOrderService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     // Subscribe to cancellation confirmation events emitted by matching engine

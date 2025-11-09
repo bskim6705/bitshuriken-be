@@ -16,15 +16,10 @@ import { UserModule } from './spot/user/user.module';
 import { WalletModule } from './spot/wallet/wallet.module';
 import { FeeModule } from './spot/fee/fee.module';
 import { KlineModule } from './spot/kline/kline.module';
-import { PrecisionService } from './precision/precision.service';
 import { FuturesUserModule } from './futures/user/futures-user.module';
 
 @Global()
-@Module({
-  providers: [PrecisionService],
-  exports: [PrecisionService],
-  imports: [FuturesUserModule],
-})
+@Module({})
 export class CommonModule {}
 
 @Module({

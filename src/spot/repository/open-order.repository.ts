@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 
 import { PrismaService } from '../prisma/prisma.service';
 import {
@@ -26,14 +26,13 @@ export interface CreateOpenOrderParams {
 export class OpenOrderRepository {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly precisionService: PrecisionService,
-  ) {}
+  ) { }
 
   /* ------------------------------------------------------------------ */
   /* Helper methods                                                    */
   /* ------------------------------------------------------------------ */
   private D(d: Decimal.Value): Decimal {
-    return this.precisionService.decimal(d);
+    return Precision.decimal(d);
   }
 
   /* ------------------------------------------------------------------ */

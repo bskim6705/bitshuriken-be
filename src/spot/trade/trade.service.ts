@@ -4,7 +4,7 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 import { Trade } from '../types';
 
 import { OrderStatus } from '@prisma/client-spot';
@@ -26,8 +26,7 @@ export class TradeService implements OnModuleInit, OnModuleDestroy {
     private readonly prisma: PrismaService,
     private readonly openOrderService: OpenOrderService,
     private readonly tradeLogRepo: TradeLogRepository,
-    private readonly precisionService: PrecisionService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.consumer = await this.kafkaService.createConsumer(
@@ -99,8 +98,8 @@ export class TradeService implements OnModuleInit, OnModuleDestroy {
       this.logger.warn('Trade message missing userId');
       return;
     }
-    const executedBase = this.precisionService.decimal(qty);
-    const executedQuote = this.precisionService.multiply(price, qty);
+    const executedBase = Precision.decimal(qty);
+    const executedQuote = Precision.multiply(price, qty);
 
     try {
       const makerDelta = maker.side === 'SELL' ? executedBase : executedQuote;

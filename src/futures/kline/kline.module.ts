@@ -4,7 +4,6 @@ import { FuturesKlineService } from './kline.service';
 import { FuturesKafkaModule } from '../kafka/kafka.module';
 import { Candle, CandleSchema } from '../../../mongoose/schema/candles';
 import { CandleRepository } from '../repository/candle.repository';
-import { PrecisionService } from '../../precision/precision.service';
 import { FuturesKlineController } from './kline.controller';
 
 @Module({
@@ -13,6 +12,6 @@ import { FuturesKlineController } from './kline.controller';
     MongooseModule.forFeature([{ name: Candle.name, schema: CandleSchema }]),
   ],
   controllers: [FuturesKlineController],
-  providers: [FuturesKlineService, CandleRepository, PrecisionService],
+  providers: [FuturesKlineService, CandleRepository],
 })
 export class FuturesKlineModule {}

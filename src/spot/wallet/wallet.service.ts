@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 
 import { BalanceRepository } from '../repository/balance.repository';
 @Injectable()
 export class WalletService {
   constructor(
     private readonly balanceRepo: BalanceRepository,
-    private readonly precisionService: PrecisionService,
-  ) {}
+  ) { }
 
   deposit(userId: number, currencyCode: string, amount: number) {
     return this.balanceRepo.upsertBalance(
       userId,
       currencyCode,
-      this.precisionService.decimal(amount),
-      this.precisionService.decimal(0),
+      Precision.decimal(amount),
+      Precision.decimal(0),
     );
   }
 
@@ -23,8 +22,8 @@ export class WalletService {
     return this.balanceRepo.upsertBalance(
       userId,
       currencyCode,
-      this.precisionService.decimal(-amount),
-      this.precisionService.decimal(0),
+      Precision.decimal(-amount),
+      Precision.decimal(0),
     );
   }
 }

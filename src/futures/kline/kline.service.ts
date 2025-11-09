@@ -6,7 +6,7 @@ import { Trade } from '../types';
 import { EachBatchPayload } from 'kafkajs';
 import { FuturesKafkaService } from '../kafka/kafka.service';
 import { CandleRepository } from '../repository/candle.repository';
-import { PrecisionService } from '../../precision/precision.service';
+import { Precision } from '@libs/utils/precision';
 
 /**
  * KlineService consumes the `trades` Kafka topic in real-time and aggregates
@@ -24,8 +24,7 @@ export class FuturesKlineService implements OnModuleInit {
   constructor(
     private readonly kafkaService: FuturesKafkaService,
     private readonly candleRepository: CandleRepository,
-    private readonly precisionService: PrecisionService,
-  ) {}
+  ) { }
 
   /* ------------------------------------------------------------------ */
   /* Kafka consumer initialisation                                      */
@@ -88,24 +87,24 @@ export class FuturesKlineService implements OnModuleInit {
         continue;
       }
 
-      const prices = trades.map((t) => this.precisionService.decimal(t.price));
+      const prices = trades.map((t) => Precision.decimal(t.price));
       const qtySum = trades.reduce(
-        (sum, t) => sum.plus(this.precisionService.decimal(t.qty)),
-        this.precisionService.decimal(0),
+        (sum, t) => sum.plus(Precision.decimal(t.qty)),
+        Precision.decimal(0),
       );
 
       // Create candle document and persist.
       await this.candleRepository.create({
         symbol,
-        open: this.precisionService.quantize(trades[0].price),
-        close: this.precisionService.quantize(trades[trades.length - 1].price),
-        high: this.precisionService.quantize(
+        open: Precision.quantize(trades[0].price),
+        close: Precision.quantize(trades[trades.length - 1].price),
+        high: Precision.quantize(
           prices.reduce((max, p) => (p.gt(max) ? p : max), prices[0]),
         ),
-        low: this.precisionService.quantize(
+        low: Precision.quantize(
           prices.reduce((min, p) => (p.lt(min) ? p : min), prices[0]),
         ),
-        volume: this.precisionService.quantize(qtySum),
+        volume: Precision.quantize(qtySum),
         startTime: new Date(epoch * 1000),
         endTime: new Date(epoch * 1000 + 999),
       });
