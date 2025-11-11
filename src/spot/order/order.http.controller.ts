@@ -5,12 +5,10 @@ import { OrderService } from './order.service';
 
 @Controller('orders')
 export class OrderHttpController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
   @Post()
-  async create(
-    @Body() dto: CreateOrderDto,
-  ): Promise<{ ack: true; orderId: string }> {
+  async create(@Body() dto: CreateOrderDto): Promise<{ ack: true; orderId: string }> {
     return this.orderService.placeOrder(dto);
   }
 

@@ -17,7 +17,7 @@ export interface OrderPayload extends Order {
   quoteCurrencyCode: string;
 }
 
-export interface CancelPayload {
+export type CancelPayload = {
   userId: number;
   symbol: string;
   orderId: string;
@@ -25,7 +25,7 @@ export interface CancelPayload {
   quoteCurrencyCode: string;
 }
 
-export interface MakerTakerInfo {
+export type MakerTakerInfo = {
   orderId: string;
   side: OrderSide;
 }
@@ -39,9 +39,7 @@ export class OrderService {
     private readonly openOrderService: OpenOrderService,
   ) { }
 
-  async placeOrder(
-    dto: CreateOrderDto,
-  ): Promise<{ ack: true; orderId: string }> {
+  async placeOrder(dto: CreateOrderDto): Promise<{ ack: true; orderId: string }> {
     // 1. Fetch pair info to know base/quote assets
     const pair = await this.pairService.findBySymbol(dto.symbol);
     if (!pair) {

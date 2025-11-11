@@ -49,6 +49,7 @@ export class BalanceService {
     );
   }
 
+  // This method locks and does update the delta balance.
   unlock(userId: number, currencyCode: string, amount: Decimal) {
     this.assertPositive(amount);
     return this.balanceRepo.upsertBalance(

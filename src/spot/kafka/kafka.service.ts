@@ -53,10 +53,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       messages: [
         {
           key: 'match',
-          value: JSON.stringify({
-            action: 'cancel',
-            cancelPayload,
-          }),
+          value: JSON.stringify({ action: 'cancel', cancelPayload }),
         },
       ],
     });
